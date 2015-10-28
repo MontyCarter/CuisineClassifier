@@ -58,6 +58,7 @@ def genIngredMap(recipes):
     for recipe in recipes:
         for ingred in recipe['ingredients']:
             ingredMap[ingred]['usageCount'] += 1
+    pprint(ingredMap)
     return ingredMap
 
 # Conceptually identical to genIngredMap
@@ -72,6 +73,7 @@ def genCuisineMap(recipes):
         cuisineMap[cuisines[x]] = {'dim':x, 'usageCount':0}
     for recipe in recipes:
         cuisineMap[recipe['cuisine']]['usageCount'] += 1
+    pprint(cuisineMap)
     return cuisineMap
     
 def genVectorRepresentation(recipes):
@@ -84,11 +86,11 @@ def genVectorRepresentation(recipes):
         # Create a list of zeros of the same size as the number
         # of possible ingredients, plus 1 extra slot for the label
         vector = [0] * (1 + len(iMap))
-        # Add the label in the first slot
-        vector[0] = cMap[recipe['cuisine']]['dim']
         # Set the dimension to 1 for each present ingredient
         for ingred in recipe['ingredients']:
             vector[iMap[ingred]['dim']] = 1
+        # Add the label in the last slot
+        vector[-1] = cMap[recipe['cuisine']]['dim']
         vectors.append(vector)
     return vectors
         
