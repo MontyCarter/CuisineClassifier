@@ -16,33 +16,43 @@
 \maketitle
 
 \section{Recap}
-
+The goal of our proposed project is to classify the type of cuisine based on recipe ingredients.
 \section{Milestones Achieved}
 \label{sec:background}
-\begin{enumerate}
-	\item Acquired and formatted data
-	\item Vectorized data
+%\begin{enumerate}
+First, we have downloaded training and test data from kaggle.com and formatted it properly.
+
+Then we wrote a python program to read the data stored in JSON format and convert it into a data structure (vector)
+so that it can be processed smoothly by machine learning algorithms. To be more specific,
 	\begin{enumerate}
-		\item Mapped each ingredient to a dimension
-		\item Mapped each possible cuisine to a label value
+		\item Each ingredient is mapped to a dimension of either $0$ or $1$.
+		\item Each possible cuisine type is mapped to a label value and put at the beginning of each vector.
 	\end{enumerate}
-	\item Read about ways to address multi-class classification
-\end{enumerate}
+
+After having done the input data processing, we did some analysis on the input data set which enables to either simplify the data or choose more efficient machine learning algorithms. For instance, we obtained the total dimension of the training data set and also the distribution of related attributes in a data entry. 
+
+We realized that the data set of this project has multiple labels while most of machine learning algorithms that we have learned from class are binary classifiers. Therefore, we are reading about ways to address multi-class classification.\cite{wiki}
+%\end{enumerate}
 
 
 \section{Plan}
 \label{sec:plan}
 
-Our plan of action is as follows: 
+The first thing of our plan is to refine the data so it can be processed more accurately by machine learning algorithms. The reason of this input data refinement is that
+we notice that there are around $6000$ sorts of ingredients in our training data set, which can make it hard for K nearest neighbor algorithm to classify the data set.
+Moreover, duplicate ingredients exists with spelling variantions so we should be able to remove the naming redudancy and thus reduce the dimensionality of the training data set.
 
-\begin{enumerate}
-\item Need to decide on algorithm
-\item Try one-vs-one multi-class classification
-\item Try one-vs-res multi-class classification
-\item Try other possible ways of doing multi-class classification (if any) 
-\end{enumerate}
+The next step is to apply machine learning algorithms on the training set. The first algorithm we would like to try is decision tree since it is a simple algorithm to learn data with multiple labels. Another reason is that we noticed that many ingredients are only associated with one individual cuisine. Thus it may be easy for decision tree to generalize the training data.
 
-\newpage
+If decision tree does not work well, then we will turn to algorithms that convert the problem of multi-class classification into multiple binary-class classification problems. For instance, we can try one-vs-one multi-class classification\cite{wiki} and one-vs-res multi-class classification\cite{wiki}.  
+%\begin{enumerate}
+%\item Need to decide on algorithm
+%\item Try one-vs-one multi-class classification
+%\item Try one-vs-res multi-class classification
+%\item Try other possible ways of doing multi-class classification (if any) 
+%\end{enumerate}
+
+%\newpage
 \bibliography{refs}
 \bibliographystyle{plain}
 \end{document}
