@@ -16,22 +16,46 @@
 \maketitle
 
 \section{Recap}
-The goal of our proposed project is to classify the type of cuisine based on recipe ingredients\cite{kaggle-link}.
+The goal of our proposed project is to predict the cuisine type of a
+recipe based on the recipe's ingredient list\cite{kaggle-link}.  In
+the dataset we are given a list of recipes.  For each recipe we are
+given cuisine type and a list of ingredients.
+
 \section{Milestones Achieved}
 \label{sec:background}
 %\begin{enumerate}
-First, we have downloaded training and test data\cite{download-link} from kaggle.com and formatted it properly.
+Our first task was to acquire the training and test
+data\cite{download-link} from kaggle.com and ensure its formatting
+was proper for machine processing.
 
-Then we wrote a python program to read the data stored in JSON format and convert it into a data structure (vector)
-so that it can be processed smoothly by machine learning algorithms. To be more specific,
-	\begin{enumerate}
-		\item Each ingredient is mapped to a dimension of either $0$ or $1$.
-		\item Each possible cuisine type is mapped to a label value and put at the beginning of each vector.
-	\end{enumerate}
+Next we wrote a python program to read the data stored in JSON format
+and convert it into a vector data structure so that it can be
+processed smoothly by machine learning algorithms. To be more 
+specific, each recipe becomes a vector where each dimension represents
+a possible ingredient.  If the dimension's value is 0, the ingredient
+is not present in the recipe; if the value is 1, the ingredient is
+present in the recipe.  The final dimension of the vector is the
+label.  Because we are dealing with multiple cuisines, we have a
+multi-class classification problem (which is addressed in further
+detail below).  For now, we mapped each possible cuisine to an integer
+value, and this value is inserted as the last dimension in each recipe
+vector.  We recognize that when we get further into analysis using
+specific algorithms, it is likely that we will have to change the
+representation of the label. 
 
-After having done the input data processing, we did some analysis on the input data set which enables to either simplify the data or choose more efficient machine learning algorithms. For instance, we obtained the total dimension of the training data set and also the distribution of related attributes in a data entry. 
+Having transformed the data, we also did some preliminary analysis of
+the data.  For example, we noticed that there are about 6000 different
+possible ingredients (meaning 6000 dimensions per vector), which may
+prove to be a challenge for linear classification.  However, we also
+noticed that there are a number of different ingredients which seem to
+be only slight spelling variations of the same actual ingredient.
+Condensing such variants into a single ingredient may help with
+reducing dimensionality.
 
-We realized that the data set of this project has multiple labels while most of machine learning algorithms that we have learned from class are binary classifiers. Therefore, we are reading about ways to address multi-class classification.\cite{wiki}
+We realize that perhaps our biggest obstacle with this project is
+going to be the multi-class classification.  We haven't really
+addressed such algorithms in class, so we are reading about ways to
+address multi-class classification.\cite{wiki}
 %\end{enumerate}
 
 
