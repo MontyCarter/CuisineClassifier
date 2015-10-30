@@ -62,9 +62,30 @@ address multi-class classification.\cite{wiki}
 \section{Plan}
 \label{sec:plan}
 
-The first thing of our plan is to refine the data so it can be processed more accurately by machine learning algorithms. The reason of this input data refinement is that
-we notice that there are around $6000$ sorts of ingredients in our training data set, which can make it hard for K nearest neighbor algorithm to classify the data set.
-Moreover, duplicate ingredients exists with spelling variantions so we should be able to remove the naming redudancy and thus reduce the dimensionality of the training data set.
+Our data is in relatively good shape to begin processing straight
+away.  The exceptions to this, as mentioned above, are that the
+dimensionality is relatively high, which may be problematic, and the
+observation that there may essentially be duplicate ingredients which
+can be joined together.
+
+Initially, our plan is to attempt several machine learning algorithms
+on the vectorized data without modifying the dimensionality.  This
+will require us to come up with a strategy for doing multi-class
+classification (one vs. one, or one vs. rest, or possibly other
+approaches).
+
+If any of these algorithms work well on the vectorized data as is,
+then we're in good shape.  However, if we aren't seeing decent
+results, we may look to reduce the dimensionality by joining
+ingredients with spelling variations into a single dimension.  I am
+hopeful that things will work well as is, because there are many, many
+ingredients which are used in only one recipe.  This means that the
+number of ingredients we're likely to see in test data should be far
+less than the 6000 from the training data.
+
+With that said, I just realized we'll need to handle the case where
+unknown ingredients are encountered during testing.  
+
 
 The next step is to apply machine learning algorithms on the training set. The first algorithm we would like to try is decision tree since it is a simple algorithm to learn data with multiple labels. Another reason is that we noticed that many ingredients are only associated with one individual cuisine. Thus it may be easy for decision tree to generalize the training data.
 
