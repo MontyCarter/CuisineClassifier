@@ -74,6 +74,8 @@ def genCuisineMap(recipes):
     
 def genVectorRepresentation(recipes,iMap,cMap):
     vectors = list()
+    seenUnknownIngred = False
+    unknownIngredCount = 0
     # Loop through each recipe, vectorize it, and add it to vectors
     for recipe in recipes:
         # Create a list of zeros of the same size as the number
@@ -87,13 +89,17 @@ def genVectorRepresentation(recipes,iMap,cMap):
             if ingred  in iMap:
                 vector[iMap[ingred]['dim']] = 1.
             else:
-                print("Unknown ingredient seen in test data:")
-                print("  " + ingred)
+                if not seenUnknownIngred:
+                    pass
+                    #print("Unknown ingredient seen in test data:")
+                #print("  " + ingred)
+                seenUnknownIngred = True
+                unknownIngredCount += 1
         # Add the label in the last slot
         if cMap:
             vector[-1] = cMap[recipe['cuisine']]['dim']
         vectors.append(vector)
-    return vectors
+    return vectors, unknownIngredCount
 
 def toSklearnFormat(trainFile, testFile):
     #Read in json files
@@ -105,10 +111,11 @@ def toSklearnFormat(trainFile, testFile):
     cMap = genCuisineMap(train)
     #Convert json into a list of vector examples, and maps from ingredients
     #  to their indices and cuisines into their label numbers
-    trainVectors = genVectorRepresentation(train, iMap, cMap)
-    testVectors = genVectorRepresentation(test, iMap, None)
+    trainVectors, unknownTrain = genVectorRepresentation(train, iMap, cMap)
+    testVectors, unknownTest = genVectorRepresentation(test, iMap, None)
     #Create an object to store everything
     dataset = dict()
+    dataset['unknownTestIngredCount'] = unknownTest
     #Add the training data target names (label names)
     dataset['target_names'] = array(list(cMap.keys()))
     #Add the feature names (ingredient names) (applies to test & train)
@@ -127,4 +134,15 @@ def toSklearnFormat(trainFile, testFile):
     #Add the target labels to the dataset object
     dataset['target'] = array(target)
     #Add the test data to the dataset object
+    dataset['test'] = array(test)
     return dataset
+
+def printSklearnDatasetStats(dataset):
+    print()
+    print("Total dataset statistics:")
+    print("    Training cuisine count:              " + str(len(dataset['target_names'])))
+    print("    Training ingredient count:           " + str(len(dataset['feature_names'])))
+    print("    Training recipes:                    " + str(len(dataset['data'])))
+    print("    Test recipes:                        " + str(len(dataset['test'])))
+    print("    Unknown Ingredients in Test Recipes: " + str(dataset['unknownTestIngredCount']))
+
