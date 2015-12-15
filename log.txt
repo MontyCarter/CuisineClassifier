@@ -1,0 +1,17 @@
+
+Total dataset statistics:
+    Training cuisine count:              20
+    Training ingredient count:           6714
+    Training recipes:                    39774
+    Test recipes:                        9944
+    Unknown Ingredients in Test Recipes: 469
+
+Training Statistics:
+    Training Examples Used For Training: 3977
+    Training Examples Used For Testing:  500
+
+Best parameters set found on development set:
+{'gamma': 0.0001, 'kernel': 'rbf', 'C': 1000}
+
+Accurately predicted:
+341/500
