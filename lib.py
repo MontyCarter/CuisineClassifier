@@ -150,17 +150,8 @@ def printSklearnDatasetStats(dataset):
 
 
 
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, numpy.ndarray):
-            if obj.ndim == 1:
-                return obj.tolist()
-            else:
-                return [self.default(obj[i]) for i in range(obj.shape[0])]
-        return json.JSONEncoder.default(self, obj)
-
 def serialize(dataset, filename):
-    pickle.dump(dataset, open(filename, 'wb'))
+    pickle.dump(dataset, open(filename,'wb'), protocol=-1)
 
 def unserialize(serializedFile):
     return pickle.load(open(serializedFile, 'rb'))
@@ -168,8 +159,8 @@ def unserialize(serializedFile):
 def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
     #Use kfold to split into foldNum (train,test) sets
     count = 0
-    kf = KFold(len(fullTrainingSet), n_folds=10)
-    for train,test in folds:
+    kf = KFold(len(fullTrainingData), n_folds=10)
+    for train,test in kf:
         trainSet = dict()
         testSet = dict()
         trainSet['data'] = fullTrainingData[train]

@@ -2,25 +2,18 @@ from lib import *
 from sklearn import svm
 from pprint import pprint
 
-trainFile = 'srcData/train.json'
-testFile = 'srcData/test.json'
-
 trainSize = 1500
 predictSize = 1000
 
-#Get dataset object in sklearn format
-recData = toSklearnFormat(trainFile=trainFile, testFile=testFile)
-serialize(recData, 'fullDataset.dat')
-a = unserialize('fullDataset.dat')
-if a == recData:
-    print("It works!")
+
+recData = unserialize('fullDataset.dat')
 #Print statistics
 printSklearnDatasetStats(recData)
 print()
 print("Training Statistics:")
 print("    Training Examples Used For Training: " + str(trainSize))
 print("    Training Examples Used For Testing:  " + str(predictSize))
-exit()
+
 #Ensure we have enough training examples
 assert(trainSize+predictSize <= len(recData['data']))
 #Instantiate the svm classifier
