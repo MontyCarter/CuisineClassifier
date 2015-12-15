@@ -1,5 +1,7 @@
 import json
 from numpy import array
+import pickle
+from sklearn.cross_validation import KFold
 
 # Reads a json file into python data structures
 def readJson(filename):
@@ -146,3 +148,78 @@ def printSklearnDatasetStats(dataset):
     print("    Test recipes:                        " + str(len(dataset['test'])))
     print("    Unknown Ingredients in Test Recipes: " + str(dataset['unknownTestIngredCount']))
 
+
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, numpy.ndarray):
+            if obj.ndim == 1:
+                return obj.tolist()
+            else:
+                return [self.default(obj[i]) for i in range(obj.shape[0])]
+        return json.JSONEncoder.default(self, obj)
+
+def serialize(dataset, filename):
+    pickle.dump(dataset, open(filename, 'wb'))
+
+def unserialize(serializedFile):
+    return pickle.load(open(serializedFile, 'rb'))
+
+def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
+    #Use kfold to split into foldNum (train,test) sets
+    count = 0
+    kf = KFold(len(fullTrainingSet), n_folds=10)
+    for train,test in folds:
+        trainSet = dict()
+        testSet = dict()
+        trainSet['data'] = fullTrainingData[train]
+        testSet['data'] = fullTrainingData[test]
+        trainSet['target'] = fullTrainingTarget[train]
+        testSet['target'] = fullTrainingTarget[test]
+        trainFile = "train_" + str(count) + ".dat"
+        testFile = "test_" + str(count) + ".dat"
+        trainSet = serialize(trainSet, trainFile)
+        testSet = serialize(testSet, testFile)
+        count += 1
+
+
+#  pythonScript - one python script per ML algo we use
+#  foldNum - the current fold number
+def crossValidateSubprocess(pythonScript, foldNum, hyperparams):
+    #Recreate input filenames
+    #stestFile = test_<foldNum>.dat
+    #strainFile = train_<foldNum>.dat
+    #Use subprocess to call pythonScript, passing stestFile, strainFile, and hyperparam list
+    #pythonScript should write a result file (see below for details)
+    pass
+
+def collectResults(expectedResultFiles):
+    pass
+    #resultList = list()
+    #algoParamCombos = set()
+    #avgComboResults = list()
+    #Loop through each expected result file
+        #Add (algo, foldNum, hyperparams, accuracy) to resultList
+        #Add (algo, hyperparams) to alogParamCombos
+    #For curCombo in algoParamCombos:
+        #curComboCount = 0
+        #curComboAcc = 0.
+        #for curResult in resultList:
+            #if curCombo matches curResult (matching means curResult is one of the folds for curCombo)
+                #curComboCount += 1
+                #curComboAcc += curCombo.Accuracy
+        #avgComboResults.append([curCombo.algo, curCombo.hyperparams, curComboAcc/curComboCount])
+    #return avgComboResults
+
+#pythonScript algo requirements
+#  Params:
+#    first command line arg is fold number
+#    remaining command line args are hyperparameters
+#  Calculates:
+#    accuracy when training with train_<foldNum>.dat
+#  Output:
+#    Written to <algoName>_<foldNum>_<param1>_<param2>_<param...>.res
+#    Contents of this file should simply be testCorrect/testTotal
+#    for example, svm.SVC_3_0.001_100.res would have the single line "0.75332" in it
+    
+#---------------End Skeleton---------------------
