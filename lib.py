@@ -1,8 +1,17 @@
 import json
-from numpy import array
 import pickle
+import multiprocessing
+import subprocess
+from multiprocessing.pool import ThreadPool
+from numpy import array
+from sklearn import svm
 from sklearn.cross_validation import KFold
 
+
+
+##########################################
+# Original data format functions
+##########################################
 # Reads a json file into python data structures
 def readJson(filename):
     with open(filename) as f:
@@ -103,6 +112,10 @@ def genVectorRepresentation(recipes,iMap,cMap):
         vectors.append(vector)
     return vectors, unknownIngredCount
 
+##########################################
+# sklearn format functions
+##########################################
+
 def toSklearnFormat(trainFile, testFile):
     #Read in json files
     train = readJson(trainFile)
@@ -148,7 +161,9 @@ def printSklearnDatasetStats(dataset):
     print("    Test recipes:                        " + str(len(dataset['test'])))
     print("    Unknown Ingredients in Test Recipes: " + str(dataset['unknownTestIngredCount']))
 
-
+##########################################
+# serialization functions
+##########################################
 
 def serialize(dataset, filename):
     pickle.dump(dataset, open(filename,'wb'), protocol=-1)
@@ -173,16 +188,65 @@ def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
         testSet = serialize(testSet, testFile)
         count += 1
 
+##########################################
+# cross validation functions
+##########################################
+
+def crossValidate(function, trainSize, predictSize):
+    global results
+    num_cpus = multiprocessing.cpu_count()
+    p = ThreadPool(processes=num_cpus)
+    rs = []
+    try:
+        for x in range(2):
+            r = p.apply_async(svmTest,
+                              args=(trainSize,predictSize))
+            rs.append(r)
+        for r in rs:
+            r.wait()
+            count = r.get()
+            print()
+            print("Accurately predicted:")
+            print(str(count) + "/" + str(predictSize))
+    except KeyboardInterrupt:
+        p.terminate()
+        p.join()
+    else:
+        p.close()
+        p.join()
+
+def svmTest(trainSize,predictSize):
+    foldNum = 0
+    trainFile = "train_" + str(foldNum) + ".dat"
+    testFile = "test_" + str(foldNum) + ".dat"
+    trainData = unserialize(trainFile)
+    testData = unserialize(testFile)
+    print("here")
+    Cs = [1., 10., 100., 1000., 10000.]
+    #Instantiate the svm classifier
+    clf = svm.SVC(gamma=0.001, C=100.)
+    #Train the svm classifier
+    clf.fit(trainData['data'][:trainSize], trainData['target'][:trainSize])
+    #Predict the labels of the last predictSize training examples
+    pred = clf.predict(testData['data'][-1*predictSize:])
+    #Compare predicted labels with actual labels, maintaining a count of matches
+    count = 0
+    for x in range(predictSize):
+        idx = -1*x - 1
+        if(pred[idx] == testData['target'][idx]):
+            count += 1
+    return count
 
 #  pythonScript - one python script per ML algo we use
 #  foldNum - the current fold number
-def crossValidateSubprocess(pythonScript, foldNum, hyperparams):
-    #Recreate input filenames
-    #stestFile = test_<foldNum>.dat
-    #strainFile = train_<foldNum>.dat
-    #Use subprocess to call pythonScript, passing stestFile, strainFile, and hyperparam list
-    #pythonScript should write a result file (see below for details)
-    pass
+#  hyperparams - must be a list! (of hyper params)
+def processFold(pythonScript, foldNum, hyperparams):
+    trainFile = "train_" + str(foldNum) + ".dat"
+    testFile = "test_" + str(foldNum) + ".dat"
+    cmd = ['python3', pythonScript, foldNum] + hyperparams
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err  = p.communicate()
+    return float(out)
 
 def collectResults(expectedResultFiles):
     pass
