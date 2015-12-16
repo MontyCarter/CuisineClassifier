@@ -161,8 +161,8 @@ def printSklearnDatasetStats(dataset):
     print("Total dataset statistics:")
     print("    Training cuisine count:              " + str(len(dataset['target_names'])))
     print("    Training ingredient count:           " + str(len(dataset['feature_names'])))
-    print("    Training recipes:                    " + str(len(dataset['data'])))
-    print("    Test recipes:                        " + str(len(dataset['test'])))
+    print("    Training recipes:                    " + str(dataset['data'].shape[0]))
+    print("    Test recipes:                        " + str(dataset['test'].shape[0]))
     print("    Unknown Ingredients in Test Recipes: " + str(dataset['unknownTestIngredCount']))
 
 ##########################################
