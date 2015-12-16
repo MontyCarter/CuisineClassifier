@@ -146,3 +146,9 @@ def printSklearnDatasetStats(dataset):
     print("    Test recipes:                        " + str(len(dataset['test'])))
     print("    Unknown Ingredients in Test Recipes: " + str(dataset['unknownTestIngredCount']))
 
+if __name__ == '__main__':
+  trainFile = 'srcData/train.json'
+  testFile = 'srcData/test.json'
+  #dataset = toSklearnFormat(trainFile, testFile)
+  #print(dataset['data'])
+
