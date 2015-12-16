@@ -294,8 +294,7 @@ def svmFold(foldNum, paramCombo):
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
     for x in range(len(trainData['target'])):
-        idx = -1*x - 1
-        if(pred[idx] == testData['target'][idx]):
+        if(pred[x] == testData['target'][x]):
             correctCount += 1
     return (paramCombo, foldNum, correctCount, len(trainData['target']))
 
