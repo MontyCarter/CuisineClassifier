@@ -2,6 +2,7 @@ import json
 import pickle
 import multiprocessing
 import subprocess
+import sys
 from multiprocessing.pool import ThreadPool
 from numpy import array
 from pprint import pprint
@@ -240,7 +241,7 @@ def averageFolds(resList):
         results.append([combo, correct, total, 100*correct/total])
     return results
 
-def crossValidateSVM(trainSize, predictSize):
+def crossValidateSVM():
     global results
     num_cpus = multiprocessing.cpu_count()
     #num_cpus=13
@@ -254,14 +255,18 @@ def crossValidateSVM(trainSize, predictSize):
         for paramCombo in paramCombos:
             for foldNum in range(10):
                 r = p.apply_async(svmFold,
-                                  args=(foldNum,
-                                        trainSize,
-                                        predictSize,
-                                        paramCombo))
+                                  args=(foldNum, paramCombo))
                 #sleep(10)
                 rs.append(r)
+        finishedCount = 0
+        length = len(paramCombos)*10
+        sys.stdout.write("  Validation Progress: " + str(round(100*finishedCount/length,2)) + "% \r")
+        sys.stdout.flush()
         for r in rs:
             r.wait()
+            finishedCount += 1
+            sys.stdout.write("  Validation Progress: " + str(round(100*finishedCount/length,2)) + "% \r")
+            sys.stdout.flush()
             output = r.get()
             results.append(output)
     except KeyboardInterrupt:
@@ -275,7 +280,7 @@ def crossValidateSVM(trainSize, predictSize):
     pprint(results)
     pprint(avgResults)
 
-def svmFold(foldNum, trainSize,predictSize, paramCombo):
+def svmFold(foldNum, paramCombo):
     trainFile = "train_" + str(foldNum) + ".dat"
     testFile = "test_" + str(foldNum) + ".dat"
     trainData = unserialize(trainFile)
@@ -283,16 +288,16 @@ def svmFold(foldNum, trainSize,predictSize, paramCombo):
     #Instantiate the svm classifier
     clf = svm.SVC(**paramCombo)
     #Train the svm classifier
-    clf.fit(trainData['data'][:trainSize], trainData['target'][:trainSize])
+    clf.fit(trainData['data'], trainData['target'])
     #Predict the labels of the last predictSize training examples
-    pred = clf.predict(testData['data'][-1*predictSize:])
+    pred = clf.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
-    for x in range(predictSize):
+    for x in range(len(trainData['target'])):
         idx = -1*x - 1
         if(pred[idx] == testData['target'][idx]):
             correctCount += 1
-    return (paramCombo, foldNum, correctCount, predictSize)
+    return (paramCombo, foldNum, correctCount, len(trainData['target']))
 
 #  pythonScript - one python script per ML algo we use
 #  foldNum - the current fold number
