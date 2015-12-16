@@ -293,7 +293,7 @@ def svmFold(foldNum, paramCombo):
     pred = clf.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
-    for x in range(len(trainData['target'])):
+    for x in range(len(testData['target'])):
         if(pred[x] == testData['target'][x]):
             correctCount += 1
     return (paramCombo, foldNum, correctCount, len(trainData['target']))
