@@ -4,8 +4,11 @@ import multiprocessing
 import subprocess
 from multiprocessing.pool import ThreadPool
 from numpy import array
+from pprint import pprint
+from scipy.sparse import csr_matrix
 from sklearn import svm
 from sklearn.cross_validation import KFold
+from time import sleep
 
 
 
@@ -145,11 +148,11 @@ def toSklearnFormat(trainFile, testFile):
     for testdatum in testVectors:
         test.append(testdatum)
     #Add the examples to the dataset object
-    dataset['data'] = array(data)
+    dataset['data'] = csr_matrix(array(data))
     #Add the target labels to the dataset object
     dataset['target'] = array(target)
     #Add the test data to the dataset object
-    dataset['test'] = array(test)
+    dataset['test'] = csr_matrix(array(test))
     return dataset
 
 def printSklearnDatasetStats(dataset):
@@ -174,12 +177,13 @@ def unserialize(serializedFile):
 def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
     #Use kfold to split into foldNum (train,test) sets
     count = 0
-    kf = KFold(len(fullTrainingData), n_folds=10)
+    kf = KFold(fullTrainingData.shape[0], n_folds=10)
     for train,test in kf:
+        print(train,test)
         trainSet = dict()
         testSet = dict()
-        trainSet['data'] = fullTrainingData[train]
-        testSet['data'] = fullTrainingData[test]
+        trainSet['data'] = csr_matrix(fullTrainingData[train])
+        testSet['data'] = csr_matrix(fullTrainingData[test])
         trainSet['target'] = fullTrainingTarget[train]
         testSet['target'] = fullTrainingTarget[test]
         trainFile = "train_" + str(count) + ".dat"
@@ -187,55 +191,108 @@ def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
         trainSet = serialize(trainSet, trainFile)
         testSet = serialize(testSet, testFile)
         count += 1
+        # trainSet={'data':exampleVectors, 'target':listOflabels}
 
 ##########################################
 # cross validation functions
 ##########################################
 
-def crossValidate(function, trainSize, predictSize):
+class hashabledict(dict):
+    def __hash__(self):
+        return hash(tuple(sorted(self.items())))
+
+def traverse(a, level, l, res):
+    if level == len(a):
+        return res.append(l)
+    for x in a[level]:
+        ll = list(l)
+        ll.append(x)
+        traverse(a, level+1, ll, res)
+
+def genCombos(*valueNamePairs):
+    combos = list()
+    vals = [pair[0] for pair in valueNamePairs]
+    labels = [pair[1] for pair in valueNamePairs]
+    traverse(vals, 0, [], combos)
+    dictCombos = list()
+    for combo in combos:
+        dictCombo = dict()
+        for x in range(len(combo)):
+            dictCombo[labels[x]] = combo[x]
+        dictCombos.append(hashabledict(dictCombo))
+    return dictCombos
+
+# resList like [(paramCombo1, foldNum1, correctTestCount11, totalTestCount11),
+#               (paramCombo1, foldNum2, correctTestCount12, totalTestCount12),
+#               ...]
+def averageFolds(resList):
+    comboSets = set()
+    results = list()
+    for res in resList:
+        comboSets.add(res[0])
+    pprint(comboSets)
+    for combo in comboSets:
+        correct = total = 0
+        for res in resList:
+            if res[0] == combo:
+                correct += res[2]
+                total += res[3]
+        results.append([combo, correct, total, 100*correct/total])
+    return results
+
+def crossValidateSVM(trainSize, predictSize):
     global results
     num_cpus = multiprocessing.cpu_count()
+    #num_cpus=13
     p = ThreadPool(processes=num_cpus)
+    Cs = [1., 10., 100., 1000.]
+    gammas = [.0001, .001, .01, .1]
+    paramCombos = genCombos((Cs,'C'),(gammas,'gamma'))
     rs = []
+    results = []
     try:
-        for x in range(2):
-            r = p.apply_async(svmTest,
-                              args=(trainSize,predictSize))
-            rs.append(r)
+        for paramCombo in paramCombos:
+            for foldNum in range(10):
+                r = p.apply_async(svmFold,
+                                  args=(foldNum,
+                                        trainSize,
+                                        predictSize,
+                                        paramCombo))
+                #sleep(10)
+                rs.append(r)
         for r in rs:
             r.wait()
-            count = r.get()
-            print()
-            print("Accurately predicted:")
-            print(str(count) + "/" + str(predictSize))
+            output = r.get()
+            results.append(output)
     except KeyboardInterrupt:
         p.terminate()
         p.join()
     else:
         p.close()
         p.join()
+    #Results elements like: [combo, correct, total, 100*correct/total]
+    avgResults = sorted(averageFolds(results), key=lambda x: x[-1])
+    pprint(results)
+    pprint(avgResults)
 
-def svmTest(trainSize,predictSize):
-    foldNum = 0
+def svmFold(foldNum, trainSize,predictSize, paramCombo):
     trainFile = "train_" + str(foldNum) + ".dat"
     testFile = "test_" + str(foldNum) + ".dat"
     trainData = unserialize(trainFile)
     testData = unserialize(testFile)
-    print("here")
-    Cs = [1., 10., 100., 1000., 10000.]
     #Instantiate the svm classifier
-    clf = svm.SVC(gamma=0.001, C=100.)
+    clf = svm.SVC(**paramCombo)
     #Train the svm classifier
     clf.fit(trainData['data'][:trainSize], trainData['target'][:trainSize])
     #Predict the labels of the last predictSize training examples
     pred = clf.predict(testData['data'][-1*predictSize:])
     #Compare predicted labels with actual labels, maintaining a count of matches
-    count = 0
+    correctCount = 0
     for x in range(predictSize):
         idx = -1*x - 1
         if(pred[idx] == testData['target'][idx]):
-            count += 1
-    return count
+            correctCount += 1
+    return (paramCombo, foldNum, correctCount, predictSize)
 
 #  pythonScript - one python script per ML algo we use
 #  foldNum - the current fold number

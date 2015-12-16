@@ -5,9 +5,9 @@ trainSize = 1500
 predictSize = 1000
 
 
-recData = unserialize('fullDataset.dat')
+#recData = unserialize('fullDataset.dat')
 #Print statistics
-printSklearnDatasetStats(recData)
+#printSklearnDatasetStats(recData)
 print()
 print("Training Statistics:")
 print("    Training Examples Used For Training: " + str(trainSize))
@@ -18,7 +18,7 @@ print("    Training Examples Used For Testing:  " + str(predictSize))
 
 
 #Ensure we have enough training examples
-assert(trainSize+predictSize <= len(recData['data']))
-crossValidate(svmTest, trainSize, predictSize)
+#assert(trainSize+predictSize <= len(recData['data']))
+crossValidateSVM(trainSize, predictSize)
 
 
