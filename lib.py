@@ -296,7 +296,7 @@ def svmFold(foldNum, paramCombo):
     for x in range(len(testData['target'])):
         if(pred[x] == testData['target'][x]):
             correctCount += 1
-    return (paramCombo, foldNum, correctCount, len(trainData['target']))
+    return (paramCombo, foldNum, correctCount, len(testData['target']))
 
 #  pythonScript - one python script per ML algo we use
 #  foldNum - the current fold number
