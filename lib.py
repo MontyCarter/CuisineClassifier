@@ -284,7 +284,7 @@ def getFoldData(foldNum):
     testData = unserialize(testFile)
     return trainData,testData
 
-def predict(classifer, testData):
+def predict(classifier, testData):
     pred = classifier.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
