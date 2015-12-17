@@ -3,6 +3,7 @@ from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from time import time
 from sklearn import naive_bayes
+from sklearn import tree
 
 ##########################################
 # svm SVC
@@ -109,5 +110,21 @@ def GaussianBayesFold(foldNum, paramCombo):
     startTime = time()
     trainData,testData = getFoldData(foldNum)
     clf = naive_bayes.MultinomialNB()
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
+# Decision Tree 
+##########################################
+def crossValidateDecisionTree():
+    print("Using: Gaussian Naive Bayes")
+    sys.stdout.flush()
+    valueLabelPairs = None
+    crossValidate(DecisionTreeFold, valueLabelPairs)
+
+def DecisionTreeFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = tree.DecisionTreeClassifier() 
     clf.fit(trainData['data'], trainData['target'])
     return predict(clf, paramCombo, foldNum, startTime, testData)

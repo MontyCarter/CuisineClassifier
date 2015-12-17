@@ -23,6 +23,8 @@ elif sys.argv[1] == "RandFrst":
     aborted = crossValidateRandFrst()
 elif sys.argv[1] == 'GaussianBayes':
     aborted = crossValidateGaussianBayes()
+elif sys.argv[1] == 'DecisionTree':
+    aborted = crossValidateDecisionTree()
 else:
     print("Must pass algo to run.  Choose from:")
     print("SVC, SVR, SVCPoly, SVRPoly, RandFrst")
