@@ -1,13 +1,12 @@
 import json
 import pickle
 import multiprocessing
-import subprocess
+import mlAlgos
 import sys
 from multiprocessing.pool import ThreadPool
 from numpy import array
 from pprint import pprint
 from scipy.sparse import csr_matrix
-from sklearn import svm
 from sklearn.cross_validation import KFold
 from time import sleep
 
@@ -241,18 +240,6 @@ def averageFolds(resList):
         results.append([combo, correct, total, 100*correct/total])
     return results
 
-def crossValidateSvmSVC():
-    Cs = [1., 10., 100., 1000.]
-    gammas = [.0001, .001, .01, .1]
-    valueLabelPairs = [(Cs,'C'),(gammas,'gamma')]
-    crossValidate(svmSVCFold, valueLabelPairs)
-
-def crossValidateSvmSVR():
-    Cs = [1., 10., 100., 1000.]
-    gammas = [.0001, .001, .01, .1]
-    valueLabelPairs = [(Cs,'C'),(gammas,'gamma')]
-    crossValidate(svmSVRFold, valueLabelPairs)
-
 def crossValidate(function, paramValuesLabelPairs):
     global results
     num_cpus = multiprocessing.cpu_count()
@@ -289,24 +276,6 @@ def crossValidate(function, paramValuesLabelPairs):
     avgResults = sorted(averageFolds(results), key=lambda x: x[-1])
     pprint(results)
     pprint(avgResults)
-
-def svmSVCFold(foldNum, paramCombo):
-    trainData,testData = getFoldData(foldNum)
-    #Instantiate the svm classifier
-    clf = svm.SVC(**paramCombo)
-    #Train the svm classifier
-    clf.fit(trainData['data'], trainData['target'])
-    #Predict the labels of the last predictSize training examples
-    return predict(clf, testData)
-
-def svmSVRFold(foldNum, paramCombo):
-    trainData,testData = getFoldData(foldNum)
-    #Instantiate the svm classifier
-    clf = svm.SVR(**paramCombo)
-    #Train the svm classifier
-    clf.fit(trainData['data'], trainData['target'])
-    #Predict the labels of the last predictSize training examples
-    return predict(clf, testData)
 
 def getFoldData(foldNum):
     trainFile = "train_" + str(foldNum) + ".dat"

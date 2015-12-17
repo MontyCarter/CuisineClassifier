@@ -1,4 +1,4 @@
-from lib import *
+from mlAlgos import *
 from pprint import pprint
 
 trainSize = 1500
