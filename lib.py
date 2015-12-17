@@ -9,9 +9,10 @@ from pprint import pprint
 from scipy.sparse import csr_matrix
 from sklearn.cross_validation import KFold
 from time import time
-from time import sleep
 
-
+#This file provides the framework for easily running different algorithms
+#  in scikit-learn in a parallel fashion.  Also includes functions for 
+#  consuming and formatting original, raw data.
 
 ##########################################
 # Original data format functions
@@ -86,7 +87,8 @@ def genCuisineMap(recipes):
     for recipe in recipes:
         cuisineMap[recipe['cuisine']]['usageCount'] += 1
     return cuisineMap
-    
+
+#Converts json recipes to vectors, according to ingredient map and cuisine map    
 def genVectorRepresentation(recipes,iMap,cMap):
     vectors = list()
     seenUnknownIngred = False
@@ -120,6 +122,8 @@ def genVectorRepresentation(recipes,iMap,cMap):
 # sklearn format functions
 ##########################################
 
+#Reads original data in, converts to earlier format (which is no longer in use)
+# and finally converts it into a format suitable for scikit-learn
 def toSklearnFormat(trainFile, testFile):
     #Read in json files
     train = readJson(trainFile)
@@ -156,6 +160,7 @@ def toSklearnFormat(trainFile, testFile):
     dataset['test'] = csr_matrix(array(test))
     return dataset
 
+#Print statistics on dataset
 def printSklearnDatasetStats(dataset):
     print()
     print("Total dataset statistics:")
@@ -168,13 +173,15 @@ def printSklearnDatasetStats(dataset):
 ##########################################
 # serialization functions
 ##########################################
-
+#Writes python object to disk
 def serialize(dataset, filename):
     pickle.dump(dataset, open(filename,'wb'), protocol=-1)
 
+#Reads python object from disk
 def unserialize(serializedFile):
     return pickle.load(open(serializedFile, 'rb'))
 
+#Splits input data into folds, and writes folds to disk
 def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
     #Use kfold to split into foldNum (train,test) sets
     count = 0
@@ -198,10 +205,12 @@ def writeKfoldSets(fullTrainingData, fullTrainingTarget, foldNum):
 # cross validation functions
 ##########################################
 
+# Makes dictionaries hashable (for use with set())
 class hashabledict(dict):
     def __hash__(self):
         return hash(tuple(sorted(self.items())))
 
+# Generates combinations of possible parameter values
 def traverse(a, level, l, res):
     if level == len(a):
         return res.append(l)
@@ -210,6 +219,7 @@ def traverse(a, level, l, res):
         ll.append(x)
         traverse(a, level+1, ll, res)
 
+# Driver for traverse - generates combinations of possible parameter values
 def genCombos(*valueNamePairs):
     combos = list()
     vals = [pair[0] for pair in valueNamePairs]
@@ -223,9 +233,12 @@ def genCombos(*valueNamePairs):
         dictCombos.append(hashabledict(dictCombo))
     return dictCombos
 
-# resList like [(paramCombo1, foldNum1, correctTestCount11, totalTestCount11),
-#               (paramCombo1, foldNum2, correctTestCount12, totalTestCount12),
-#               ...]
+# Collects all folds for each paramCombo and aggregates the results
+#
+# resList like:
+#     [(paramCombo1, foldNum1, runTime1, correctTestCount11, totalTestCount11),
+#      (paramCombo1, foldNum2, runTime2, correctTestCount12, totalTestCount12),
+#      ...]
 def averageFolds(resList):
     comboSets = set()
     results = list()
@@ -242,43 +255,67 @@ def averageFolds(resList):
         results.append([combo, totalTime, correct, total, 100*correct/total])
     return results
 
+# Main cross validate function.  Should be called from a "crossValidate<Algo>()"
+#   function.  This function provides the mechanics for parallelization and 
+#   results aggregation/printing
+#
+# Return value indicates whether the process was aborted (True==aborted).
+#   On abort, caller should call exit(-1) so outstanding threads terminate
 def crossValidate(function, paramValuesLabelPairs):
-    global results
+    aborted = True
+    finished = False
+    #Set up threading
     num_cpus = multiprocessing.cpu_count()
-    #num_cpus=13
     p = ThreadPool(processes=num_cpus)
     paramCombos = genCombos(*paramValuesLabelPairs)
     rs = []
     results = []
+    # Setup progress "bar"
+    length = len(paramCombos)*10
+    print("Validating ", int(length/10), " parameter combinations...")
+    sys.stdout.flush()
     try:
         for paramCombo in paramCombos:
             for foldNum in range(10):
-                r = p.apply_async(function,
-                                  args=(foldNum, paramCombo))
-                #sleep(10)
+                #Queue algo on each paramCombo/fold
+                r = p.apply_async(function, args=(foldNum, paramCombo))
                 rs.append(r)
         finishedCount = 0
-        length = len(paramCombos)*10
-        sys.stdout.write("  Validation Progress: " + str(round(100*finishedCount/length,2)) + "% \r")
+        progressStr = "  Validation Progress: " 
+        progressStr += str(round(100*finishedCount/length,2)) + "% \r"
+        sys.stdout.write(progressStr)
         sys.stdout.flush()
+        #Wait for queued tasks to finish, print progress along the way
         for r in rs:
             r.wait()
             finishedCount += 1
-            sys.stdout.write("  Validation Progress: " + str(round(100*finishedCount/length,2)) + "% \r")
+            progressStr = "  Validation Progress: " 
+            progressStr += str(round(100*finishedCount/length,2)) + "% \r"
+            sys.stdout.write(progressStr)
             sys.stdout.flush()
             output = r.get()
             results.append(output)
+        print()
     except KeyboardInterrupt:
-        p.terminate()
-        p.join()
+        #Print partial results and exit
+        print("Aborted - printing individual fold results:")
+        pprint(results)
+        avgResults = sorted(averageFolds(results), key=lambda x: x[-1])
+        pprint(avgResults)
+        sys.stdout.flush()
+        return aborted
     else:
         p.close()
         p.join()
-    #Results elements like: [combo, correct, total, 100*correct/total]
+    #print results
     avgResults = sorted(averageFolds(results), key=lambda x: x[-1])
+    print("Individual fold results:")
     pprint(results)
+    print("Aggregate Cross Validation results:")
     pprint(avgResults)
+    return finished
 
+#Loads train and test data for a given fold number
 def getFoldData(foldNum):
     trainFile = "train_" + str(foldNum) + ".dat"
     testFile = "test_" + str(foldNum) + ".dat"
@@ -286,6 +323,7 @@ def getFoldData(foldNum):
     testData = unserialize(testFile)
     return trainData,testData
 
+#Runs prediction on the testData, and returns a tuple of all relevant results
 def predict(classifier, paramCombo, foldNum, startTime, testData):
     pred = classifier.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
@@ -298,45 +336,3 @@ def predict(classifier, paramCombo, foldNum, startTime, testData):
             time() - startTime, 
             correctCount, 
             len(testData['target']))
-
-#  pythonScript - one python script per ML algo we use
-#  foldNum - the current fold number
-#  hyperparams - must be a list! (of hyper params)
-def processFold(pythonScript, foldNum, hyperparams):
-    trainFile = "train_" + str(foldNum) + ".dat"
-    testFile = "test_" + str(foldNum) + ".dat"
-    cmd = ['python3', pythonScript, foldNum] + hyperparams
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err  = p.communicate()
-    return float(out)
-
-def collectResults(expectedResultFiles):
-    pass
-    #resultList = list()
-    #algoParamCombos = set()
-    #avgComboResults = list()
-    #Loop through each expected result file
-        #Add (algo, foldNum, hyperparams, accuracy) to resultList
-        #Add (algo, hyperparams) to alogParamCombos
-    #For curCombo in algoParamCombos:
-        #curComboCount = 0
-        #curComboAcc = 0.
-        #for curResult in resultList:
-            #if curCombo matches curResult (matching means curResult is one of the folds for curCombo)
-                #curComboCount += 1
-                #curComboAcc += curCombo.Accuracy
-        #avgComboResults.append([curCombo.algo, curCombo.hyperparams, curComboAcc/curComboCount])
-    #return avgComboResults
-
-#pythonScript algo requirements
-#  Params:
-#    first command line arg is fold number
-#    remaining command line args are hyperparameters
-#  Calculates:
-#    accuracy when training with train_<foldNum>.dat
-#  Output:
-#    Written to <algoName>_<foldNum>_<param1>_<param2>_<param...>.res
-#    Contents of this file should simply be testCorrect/testTotal
-#    for example, svm.SVC_3_0.001_100.res would have the single line "0.75332" in it
-    
-#---------------End Skeleton---------------------

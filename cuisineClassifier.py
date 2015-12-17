@@ -7,22 +7,26 @@ import sys
 recData = unserialize('fullDataset.dat')
 #Print dataset statistics
 printSklearnDatasetStats(recData)
+sys.stdout.flush()
 #Start algorithm
 start = time()
+aborted = False
 if sys.argv[1] == "SVC":
-    crossValidateSvmSVC()
+    aborted = crossValidateSvmSVC()
 elif sys.argv[1] == "SVR":
-    crossValidateSvmSVR()
+    aborted = crossValidateSvmSVR()
 elif sys.argv[1] == "SVCPoly":
-    crossValidateSvmSVCPoly()
+    aborted = crossValidateSvmSVCPoly()
 elif sys.argv[1] == "SVRPoly":
-    crossValidateSvmSVRPoly()
+    aborted = crossValidateSvmSVRPoly()
+elif sys.argv[1] == "RandFrst":
+    aborted = crossValidateRandFrst()
 else:
     print("Must pass algo to run.  Choose from:")
-    print("SVC, SVR, SVCPoly, SVRPoly")
+    print("SVC, SVR, SVCPoly, SVRPoly, RandFrst")
     print("Example: python3 cuisineClassifier.py SVC")
     exit(-1)
 end = time()
-print("Time Elapsed: " + str(end-start))
-
-
+print("Total Elapsed Time: " + str(end-start))
+if aborted:
+    exit(-1)
