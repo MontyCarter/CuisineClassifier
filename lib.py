@@ -8,6 +8,7 @@ from numpy import array
 from pprint import pprint
 from scipy.sparse import csr_matrix
 from sklearn.cross_validation import KFold
+from time import time
 from time import sleep
 
 
@@ -232,12 +233,13 @@ def averageFolds(resList):
         comboSets.add(res[0])
     pprint(comboSets)
     for combo in comboSets:
-        correct = total = 0
+        correct = total = totalTime = 0
         for res in resList:
             if res[0] == combo:
-                correct += res[2]
-                total += res[3]
-        results.append([combo, correct, total, 100*correct/total])
+                totalTime += res[2]
+                correct += res[3]
+                total += res[4]
+        results.append([combo, totalTime, correct, total, 100*correct/total])
     return results
 
 def crossValidate(function, paramValuesLabelPairs):
@@ -284,14 +286,18 @@ def getFoldData(foldNum):
     testData = unserialize(testFile)
     return trainData,testData
 
-def predict(classifier, testData):
+def predict(classifier, paramCombo, foldNum, startTime, testData):
     pred = classifier.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
     for x in range(len(testData['target'])):
         if(pred[x] == testData['target'][x]):
             correctCount += 1
-    return (paramCombo, foldNum, correctCount, len(testData['target']))
+    return (paramCombo, 
+            foldNum, 
+            time() - startTime, 
+            correctCount, 
+            len(testData['target']))
 
 #  pythonScript - one python script per ML algo we use
 #  foldNum - the current fold number
