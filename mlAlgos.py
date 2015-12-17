@@ -81,13 +81,13 @@ def svmSVRPolyFold(foldNum, paramCombo):
 def crossValidateRandFrst():
     print("Using: Random Forest Classifier")
     sys.stdout.flush()
-    valueLabelPairs = [([5,10,15,20,50],       'n_estimators'),
-                       ([None,2,4,8,16,32,64], 'max_depth'),
-                       (['gini', 'entropy'],   'criterion'),
-                       (["auto"],              'max_features'),
-                       ([1,2,4,8],             'min_samples_split'),
-                       ([1,2,4,8],             'min_samples_leaf'),
-                       ([None,2,4,8],          'max_leaf_nodes')]
+    valueLabelPairs = [([50,75,100,150,200],    'n_estimators'),
+                       ([None],                 'max_depth'),
+                       (['gini', 'entropy'],    'criterion'),
+                       (["auto"],               'max_features'),
+                       ([1,2,4,8],              'min_samples_split'),
+                       ([1,2,4,8],              'min_samples_leaf'),
+                       ([None,2,4,8],           'max_leaf_nodes')]
     return crossValidate(randFrstFold, valueLabelPairs)
 
 def randFrstFold(foldNum, paramCombo):
