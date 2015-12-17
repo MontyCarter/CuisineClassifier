@@ -316,7 +316,7 @@ def getFoldData(foldNum):
     return trainData,testData
 
 def predict(classifer, testData):
-    pred = clf.predict(testData['data'])
+    pred = classifier.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
     for x in range(len(testData['target'])):
