@@ -267,7 +267,10 @@ def crossValidate(function, paramValuesLabelPairs):
     #Set up threading
     num_cpus = multiprocessing.cpu_count()
     p = ThreadPool(processes=num_cpus)
-    paramCombos = genCombos(*paramValuesLabelPairs)
+    if paramValuesLabelPairs:
+      paramCombos = genCombos(*paramValuesLabelPairs)
+    else:
+      paramCombos = [0]  
     rs = []
     results = []
     # Setup progress "bar"

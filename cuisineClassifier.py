@@ -21,6 +21,8 @@ elif sys.argv[1] == "SVRPoly":
     aborted = crossValidateSvmSVRPoly()
 elif sys.argv[1] == "RandFrst":
     aborted = crossValidateRandFrst()
+elif sys.argv[1] == 'GaussianBayes':
+    aborted = crossValidateGaussianBayes()
 else:
     print("Must pass algo to run.  Choose from:")
     print("SVC, SVR, SVCPoly, SVRPoly, RandFrst")

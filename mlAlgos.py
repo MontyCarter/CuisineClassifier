@@ -2,6 +2,7 @@ from lib import *
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from time import time
+from sklearn import naive_bayes
 
 ##########################################
 # svm SVC
@@ -92,5 +93,21 @@ def randFrstFold(foldNum, paramCombo):
     startTime = time()
     trainData,testData = getFoldData(foldNum)
     clf = RandomForestClassifier(**paramCombo)
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
+# Gaussian Naive Bayes 
+##########################################
+def crossValidateGaussianBayes():
+    print("Using: Gaussian Naive Bayes")
+    sys.stdout.flush()
+    valueLabelPairs = None
+    crossValidate(GaussianBayesFold, valueLabelPairs)
+
+def GaussianBayesFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = naive_bayes.MultinomialNB()
     clf.fit(trainData['data'], trainData['target'])
     return predict(clf, paramCombo, foldNum, startTime, testData)
