@@ -9,6 +9,7 @@ recData = unserialize('fullDataset.dat')
 printSklearnDatasetStats(recData)
 #Start algorithm
 start = time()
+print(sys.argv[1])
 if sys.argv[1] == "SVC":
     crossValidateSvmSVC()
 elif sys.argv[1] == "SVR":
@@ -17,6 +18,8 @@ elif sys.argv[1] == "SVCPoly":
     crossValidateSvmSVCPoly()
 elif sys.argv[1] == "SVRPoly":
     crossValidateSvmSVRPoly()
+elif sys.argv[1] == 'GaussianBayes':
+    crossValidateGaussianBayes()
 else:
     print("Must pass algo to run.  Choose from:")
     print("SVC, SVR, SVCPoly, SVRPoly")

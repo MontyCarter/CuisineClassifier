@@ -1,6 +1,7 @@
 from lib import *
 from sklearn import svm
 from time import time
+from sklearn import naive_bayes
 
 ##########################################
 # svm SVC
@@ -80,3 +81,17 @@ def svmSVCPolyFold(foldNum, paramCombo):
     #Predict the labels of the last predictSize training examples
     return predict(clf, paramCombo, foldNum, startTime, testData)
 
+##########################################
+# Gaussian Naive Bayes 
+##########################################
+def crossValidateGaussianBayes():
+    valueLabelPairs = None
+    crossValidate(GaussianBayesFold, valueLabelPairs)
+
+def GaussianBayesFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = naive_bayes.MultinomialNB()
+    clf.fit(trainData['data'], trainData['target'])
+    #Predict the labels of the last predictSize training examples
+    return predict(clf, paramCombo, foldNum, startTime, testData)

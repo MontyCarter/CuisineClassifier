@@ -247,7 +247,10 @@ def crossValidate(function, paramValuesLabelPairs):
     num_cpus = multiprocessing.cpu_count()
     #num_cpus=13
     p = ThreadPool(processes=num_cpus)
-    paramCombos = genCombos(*paramValuesLabelPairs)
+    if paramValuesLabelPairs:
+      paramCombos = genCombos(*paramValuesLabelPairs)
+    else:
+      paramCombos = [0]  
     rs = []
     results = []
     try:
