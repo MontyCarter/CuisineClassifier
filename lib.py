@@ -241,20 +241,30 @@ def averageFolds(resList):
         results.append([combo, correct, total, 100*correct/total])
     return results
 
-def crossValidateSVM():
+def crossValidateSvmSVC():
+    Cs = [1., 10., 100., 1000.]
+    gammas = [.0001, .001, .01, .1]
+    valueLabelPairs = [(Cs,'C'),(gammas,'gamma')]
+    crossValidate(svmSVCFold, valueLabelPairs)
+
+def crossValidateSvmSVR():
+    Cs = [1., 10., 100., 1000.]
+    gammas = [.0001, .001, .01, .1]
+    valueLabelPairs = [(Cs,'C'),(gammas,'gamma')]
+    crossValidate(svmSVRFold, valueLabelPairs)
+
+def crossValidate(function, paramValuesLabelPairs):
     global results
     num_cpus = multiprocessing.cpu_count()
     #num_cpus=13
     p = ThreadPool(processes=num_cpus)
-    Cs = [1., 10., 100., 1000.]
-    gammas = [.0001, .001, .01, .1]
-    paramCombos = genCombos((Cs,'C'),(gammas,'gamma'))
+    paramCombos = genCombos(*paramValuesLabelPairs)
     rs = []
     results = []
     try:
         for paramCombo in paramCombos:
             for foldNum in range(10):
-                r = p.apply_async(svmFold,
+                r = p.apply_async(function,
                                   args=(foldNum, paramCombo))
                 #sleep(10)
                 rs.append(r)
@@ -280,16 +290,32 @@ def crossValidateSVM():
     pprint(results)
     pprint(avgResults)
 
-def svmFold(foldNum, paramCombo):
-    trainFile = "train_" + str(foldNum) + ".dat"
-    testFile = "test_" + str(foldNum) + ".dat"
-    trainData = unserialize(trainFile)
-    testData = unserialize(testFile)
+def svmSVCFold(foldNum, paramCombo):
+    trainData,testData = getFoldData(foldNum)
     #Instantiate the svm classifier
     clf = svm.SVC(**paramCombo)
     #Train the svm classifier
     clf.fit(trainData['data'], trainData['target'])
     #Predict the labels of the last predictSize training examples
+    return predict(clf, testData)
+
+def svmSVRFold(foldNum, paramCombo):
+    trainData,testData = getFoldData(foldNum)
+    #Instantiate the svm classifier
+    clf = svm.SVR(**paramCombo)
+    #Train the svm classifier
+    clf.fit(trainData['data'], trainData['target'])
+    #Predict the labels of the last predictSize training examples
+    return predict(clf, testData)
+
+def getFoldData(foldNum):
+    trainFile = "train_" + str(foldNum) + ".dat"
+    testFile = "test_" + str(foldNum) + ".dat"
+    trainData = unserialize(trainFile)
+    testData = unserialize(testFile)
+    return trainData,testData
+
+def predict(classifer, testData):
     pred = clf.predict(testData['data'])
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
