@@ -1,6 +1,7 @@
 from lib import *
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
 from time import time
 from sklearn import naive_bayes
 from sklearn import tree
@@ -117,7 +118,7 @@ def GaussianBayesFold(foldNum, paramCombo):
 # Decision Tree 
 ##########################################
 def crossValidateDecisionTree():
-    print("Using: Gaussian Naive Bayes")
+    print("Using: Decision Tree")
     sys.stdout.flush()
     valueLabelPairs = None
     crossValidate(DecisionTreeFold, valueLabelPairs)
@@ -126,5 +127,24 @@ def DecisionTreeFold(foldNum, paramCombo):
     startTime = time()
     trainData,testData = getFoldData(foldNum)
     clf = tree.DecisionTreeClassifier() 
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
+# Decision Tree 
+##########################################
+def crossValidateAdaboost():
+    print("Using: Adaboost")
+    sys.stdout.flush()
+    valueLabelPairs = [([svm.SVC(C=10., gamma=0.1)], 'base_estimator'),
+                       ([5,10],                      'n_estimators'),
+                       (['SAMME'],                   'algorithm'),
+                       ([1., 10.],                   'learning_rate')]
+    crossValidate(adaboostFold, valueLabelPairs)
+
+def adaboostFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = AdaBoostClassifier(**paramCombo)
     clf.fit(trainData['data'], trainData['target'])
     return predict(clf, paramCombo, foldNum, startTime, testData)

@@ -25,9 +25,12 @@ elif sys.argv[1] == 'GaussianBayes':
     aborted = crossValidateGaussianBayes()
 elif sys.argv[1] == 'DecisionTree':
     aborted = crossValidateDecisionTree()
+elif sys.argv[1] == 'AdaBoost':
+    aborted = crossValidateAdaboost()
 else:
     print("Must pass algo to run.  Choose from:")
-    print("SVC, SVR, SVCPoly, SVRPoly, RandFrst")
+    print("  SVC, SVR, SVCPoly, SVRPoly, RandFrst,")
+    print("  GaussianBayes, DecisionTree, AdaBoost")
     print("Example: python3 cuisineClassifier.py SVC")
     exit(-1)
 end = time()
