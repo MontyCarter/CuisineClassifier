@@ -5,6 +5,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from time import time
 from sklearn import naive_bayes
 from sklearn import tree
+from sklearn import neighbors
 
 ##########################################
 # svm SVC
@@ -146,5 +147,23 @@ def adaboostFold(foldNum, paramCombo):
     startTime = time()
     trainData,testData = getFoldData(foldNum)
     clf = AdaBoostClassifier(**paramCombo)
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
+# KNN 
+##########################################
+def crossValidateKNN():
+    print("Using: KNN")
+    sys.stdout.flush()
+    valueLabelPairs = [(list(range(1, 20)), 'n_neighbors'),
+                       (['uniform', 'distance'], 'weights'),
+    		       ([2], 'p')]
+    return crossValidate(KNNFold, valueLabelPairs)
+
+def KNNFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = neighbors.KNeighborsClassifier(**paramCombo)
     clf.fit(trainData['data'], trainData['target'])
     return predict(clf, paramCombo, foldNum, startTime, testData)
