@@ -1,0 +1,28 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper]{geometry}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\newcommand{\reals}{{\mathbb R}}
+
+\title{Final report\\CS6350 Machine Learning}
+\author{Montgomery Carter \and Shaobo He}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+The problem that we addressed in our project is to predict the cuisine type of a
+recipe based on the recipe's ingredients. It originates from a competition on kaggle.com\cite{kaggle-link}. The setting of this problem is that we are given a training set of different cuisines and each cuisine is associated with a list of ingredients used to make it.
+
+We found it interesting in two ways. First, we can possibly learn the relation between recipe ingredients and ethnicity via this project. For example, a local grocery store may advertise more precisely to customers after an analysis of the category of their purchases based on the learned model. Second, data given to us in this project comes from real world, which can help us to learn the tricks to deal with unshaped data such as high dimensionality, noise, and unseen labels.
+
+We applied multiple machine learning algorithms that we learned from class by leveraging sci-kit learn python package. For the following sections, we will describe our hypothesis of this model and how we tried to learn the hypothesis using corresponding machine learning algorithms.
+
+\bibliography{refs}
+\bibliographystyle{plain}
+\end{document}
