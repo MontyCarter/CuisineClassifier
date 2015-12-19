@@ -42,6 +42,22 @@ def svmSVRFold(foldNum, paramCombo):
     return predict(clf, paramCombo, foldNum, startTime, testData)
 
 ##########################################
+# svm SVC Linear 
+##########################################
+def crossValidateSvmSVCLinear():
+    print("Using: SVC with Linear Kernel")
+    sys.stdout.flush()
+    valueLabelPairs = [([1., 10., 100., 1000., 10000.], 'C')]
+    return crossValidate(svmSVCLinearFold, valueLabelPairs)
+
+def svmSVCLinearFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = svm.SVC(**paramCombo, kernel='linear')
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
 # svm SVC poly
 ##########################################
 def crossValidateSvmSVCPoly():
@@ -111,8 +127,8 @@ def crossValidateGaussianBayes():
 def GaussianBayesFold(foldNum, paramCombo):
     startTime = time()
     trainData,testData = getFoldData(foldNum)
-    clf = naive_bayes.MultinomialNB()
-    clf.fit(trainData['data'], trainData['target'])
+    clf = naive_bayes.GaussianNB()
+    clf.fit(trainData['data'].toarray(), trainData['target'])
     return predict(clf, paramCombo, foldNum, startTime, testData)
 
 ##########################################

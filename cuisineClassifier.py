@@ -15,6 +15,8 @@ if sys.argv[1] == "SVC":
     aborted = crossValidateSvmSVC()
 elif sys.argv[1] == "SVR":
     aborted = crossValidateSvmSVR()
+elif sys.argv[1] == 'SVCLinear':
+    aborted = crossValidateSvmSVCLinear()
 elif sys.argv[1] == "SVCPoly":
     aborted = crossValidateSvmSVCPoly()
 elif sys.argv[1] == "SVRPoly":

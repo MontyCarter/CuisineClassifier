@@ -265,8 +265,8 @@ def crossValidate(function, paramValuesLabelPairs):
     aborted = True
     finished = False
     #Set up threading
-    #num_cpus = multiprocessing.cpu_count()
-    num_cpus = 32 
+    num_cpus = multiprocessing.cpu_count()
+    #num_cpus = 32 
     p = ThreadPool(processes=num_cpus)
     if paramValuesLabelPairs:
       paramCombos = genCombos(*paramValuesLabelPairs)
@@ -329,7 +329,7 @@ def getFoldData(foldNum):
 
 #Runs prediction on the testData, and returns a tuple of all relevant results
 def predict(classifier, paramCombo, foldNum, startTime, testData):
-    pred = classifier.predict(testData['data'])
+    pred = classifier.predict(testData['data'].toarray())
     #Compare predicted labels with actual labels, maintaining a count of matches
     correctCount = 0
     for x in range(len(testData['target'])):
