@@ -21,6 +21,7 @@ combination found during cross-validation.
     \hline
 	     Algorithm   & Accuracy & Time & Optimal hyper parameter\\
          \hline
+         \hline
          SVM SVC (RBF Kernel)   & 78.20  & 839.8 & C: 5.0, gamma: 0.1\\
          \hline
          SVM SVC (Poly Kernel)  & 77.35  & 430.1 & C: 1000.0, coef0: 1.0, degree: 2\\
@@ -45,11 +46,15 @@ combination found during cross-validation.
          \hline
          Random Forest & 72.10 & 156.6 & n\_estimators: 100\\
          \hline
+         %Extremely Randomized Trees & 73.44 & 356.2 &
+         %min\_samples\_split: 4,
+         %n\_estimators: 200 \\
          Extremely Randomized Trees & 73.44 & 356.2 &
-         min\_samples\_split: 4,
-         n\_estimators: 200 \\
+         \shortstack{min\_samples\_split: 4\\
+         n\_estimators: 200} \\
          \hline
-         AdaBoost (Decision Tree) & 55.66 & 126.4 & max\_depth: 1, learning\_rate : 1.0, n\_estimators: 100\\
+         %AdaBoost (Decision Tree) & 55.66 & 126.4 & max\_depth: 1, learning\_rate : 1.0, n\_estimators: 100\\
+         AdaBoost (Decision Tree) & 55.66 & 126.4 &\shortstack{ max\_depth: 1\\ learning\_rate: 1.0\\ n\_estimators: 100}\\
          \hline
          AdaBoost (SVC) & 19.71 & 12057.7 & learning\_rate: 1.0,
          n\_estimators: 10\\
