@@ -34,13 +34,13 @@ We found this problem interesting in three ways. First, as mentioned,
 the problem has real-world applications and might be interesting to
 retailers, social media sites, and other organizations that aggregate
 data about users and consumers.  Second, data given to us in this
-project comes from real world, which provides us with an opportunity
-to learn tricks to deal with unshaped data such as high
-dimensionality, noise, and unseen labels.  Finally, we found this 
-project to be interesting because it is a multi-class classification
-problem with a relatively high number of classes.  Because we didn't
-get much time to address multi-class classification in class, it has
-been nice to get some experience with such problems.
+project comes from the real world and provides us with an opportunity
+to learn tricks to deal with high-dimensional, noisy, raw data.
+Finally, we found this project to be interesting because it is a
+multi-class classification problem with a relatively high number of
+classes.  Because we didn't get much time to address multi-class
+classification in class, it has been nice to get some experience with
+such problems. 
 
 Because this was our first real-world application of machine learning,
 we didn't have much experience to guide our selection of a machine
@@ -70,8 +70,8 @@ Mexican, 4,320 are Southern US, 3,003 are Indian, 2,673 are Chinese,
 and 2,646 are French.  Each of the remaining 14 cuisines contribute
 fewer than 1,500 recipes each.
 
-For a majority of cuisines, the most commonly used ingredients are
-common across all cuisines.  For example, the most commonly used
+For a majority of cuisines, the most frequently used ingredients are
+common across cuisines.  For example, the most commonly used
 ingredient of all cuisines is salt or a salt replacement like soy
 sauce or fish sauce.  Although several of the top ingredients are
 common across all cuisines, there are ingredients that we refer to as
@@ -98,7 +98,7 @@ availability of scikit-learn\cite{scikit}, an easy to use, well supported machin
 learning package.  
 
 We first perform preprocessing on the data.  Because there was no
-useful test set provided on kaggle.com, we partition 90\% the
+useful test set provided on kaggle.com, we partition 90\% of the
 provided training data as our ``training set'', and 10\% as our ``test
 set''. This provides us with the ability to measure the performance of
 our final solution.  Two sets are then generated -- one containing the
@@ -140,7 +140,13 @@ After performing cross-validation for each algorithm, the best
 hyper-parameter combination was then used to retrain the classifier
 using the full training set, and the resulting classifier was used
 to predict labels of the test set.  The results of these experiments
-are seen below in the results section. We also put code written in this project on Github\cite{repo}.
+are seen below in the results section. Our implementation can be found
+on Github\cite{repo}.
+
+We ran machine learning algorithms on Emulab d820\cite{emulab-wiki}
+machines with four 2.2 GHz 64-bit 8-Core Intel E5-4620 processors and
+128GB DDR3 memory. We utilized all the CPUs when doing
+multi-processing cross validation. 
 
 \input{Result}
 
