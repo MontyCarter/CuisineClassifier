@@ -1,7 +1,7 @@
 \section{Results}
 We ran machine learning algorithms on Emulab d820 machines with four 2.2 GHz 64-bit 8-Core Intel E5-4620 processors and 128GB DDR3 memory. We utilized all the CPUs when doing multi-processing cross validation.
 
-Experimental results are shown in the following table. Machine learning algorithms are grouped in the table and groups are separated with an extra line. Accuracy is the average prediction accuracy of ten fold cross validation. Time is the average time taken to complete one fold. We give averaged time instead of total time because the average time is approximate to the runtime for the whole training set. We only show part of the best hyper parameters which is different to the default settings of each machine learning algorithm. Moreover, NA in the optimal hyper parameter column for a machine learning algorithm indicates that there are few hyper parameters that we can choose or we believe cross validation would not improve accuracy significantly for that particular algorithm.
+Experimental results are shown in the following table. Machine learning algorithms are grouped in the table and groups are separated with an extra line. We want to point out the different between SVC with linear kernel and Linear SVC: the former does one vs one classification while the latter does one vs the rest classification. Accuracy represents the accuracy of predicting test set with the best hyper parameter obtained from cross validation. Time is the time taken to train the classifier on the full training dataset and to predict labels of test dataset. We give averaged time instead of total time because the average time is approximate to the runtime for the whole training set. We only show part of the best hyper parameters which is different to the default settings of each machine learning algorithm. Moreover, NA in the optimal hyper parameter column for a machine learning algorithm indicates that there are few hyper parameters that we can choose or we believe cross validation would not improve accuracy significantly for that particular algorithm.
 
 \begin{center}
 	\captionof{table}{Experimental results}
@@ -42,6 +42,5 @@ Experimental results are shown in the following table. Machine learning algorith
          AdaBoost (SVC) & 19.71 & 12057.7 & learning\_rate: 1.0,
          n\_estimators: 10\\
          \hline
-        
           \end{tabular}
 \end{center}
