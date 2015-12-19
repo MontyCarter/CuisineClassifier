@@ -1,0 +1,42 @@
+\section{Results}
+\begin{center}
+	\begin{tabular}{c|c|c|c}
+    \hline
+	     Algorithm   & Accuracy & Time & Optimal hyper parameter\\
+         \hline
+         SVM SVC (rbf kernel)   & 77.83  & 839.8 & C: 10.0, gamma: 0.1\\
+         \hline
+         SVM SVC (poly kernel)  & 77.35  & 430.1 & C: 1000.0, coef0: 1.0, degree: 2\\
+         \hline
+         SVM SVC (linear kernel)   &      &  & \\
+         \hline
+         SVM LinearSVC    &  77.21   &362.9  & C: 1.0\\
+         \hline
+         \hline
+         Gaussian Naive Bayes & 35.23 & 0.23 & NA \\
+         \hline
+         Bernoulli Naive Bayes &   70.71    & 0.28  & NA \\
+         \hline
+         Multinomial Naive Bayes & 73.62 	& 0.23  & NA \\
+         \hline
+         \hline
+         Decision Tree &  61.23 & 10.1 & NA \\
+         \hline
+         \hline
+         K nearest neighbors & 54.11 & 11.26 & k: 15, weights:  distance\\
+         \hline
+         \hline
+         Random Forest & 72.10 & 156.59 & n\_estimators: 100\\
+         \hline
+         Extra Trees & 73.44 & 356.2 &
+         min\_samples\_split: 4,
+         n\_estimators: 200 \\
+         \hline
+         AdaBoost (decision tree) & 55.66 & 126.4 & max\_depth: 1, learning\_rate : 1, n\_estimators: 100\\
+         \hline
+         AdaBoost (SVC) & 19.71 & 12057.7 & learning\_rate: 1.0,
+         n\_estimators: 10\\
+         \hline
+        
+          \end{tabular}
+\end{center}
