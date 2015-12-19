@@ -87,7 +87,9 @@ the number of cuisines possible for a recipe using such ingredients.
 Another observation to be noted for our problem is that a single set of
 ingredients can map to multiple cuisines.  For example, French
 baguettes and Italian breadsticks may call for the same ingredients in
-different quantities.
+different quantities.  This necessarily places a limit on the accuracy
+we can hope to obtain in classifying recipes based on their
+ingredients alone.
 
 
 \section{Methodology}
@@ -98,12 +100,12 @@ learning package.
 
 We first perform preprocessing on the data.  Because we the test set
 provided by Kaggle does not include labels, we partition 90\% the
-provided training data as our training set, and 10\% as our test set.
-This provides us with the ability to measure the performance of our
-final solution.  Two sets are then generated -- one containing the
+provided training data as our ``training set'', and 10\% as our ``test
+set''. This provides us with the ability to measure the performance of
+our final solution.  Two sets are then generated -- one containing the
 ingredients and one containing the cuisine labels in use across the
 training set.  These lists are then sorted.  The index of each
-ingredient in the sorted set of ingredients becomes the feature
+ingredient in the sorted set of ingredients becomes the feature 
 dimension number for that ingredient, and the index of each cuisine in
 the sorted set of cuisines becomes the label number for each cuisine
 class.  A vector is then created for each recipe in the training and
@@ -113,8 +115,21 @@ the last element in the vector.
 
 As this is our first application of machine learning to a real-world
 problem, we didn't have much experience to guide our selection of an
-algorithm.  Because of this, our project became 
-Because 
+algorithm.  Because of this, we by trying a support vector machine
+classifier.  Subsequently, we tried various other classifiers.
+
+For each of the algorithms used, 10-fold cross validation was used on
+the ``training set'' (where the ``training set'' represents 90\% of
+the original training set provided by kaggle.com').  For all
+algorithms taking hyper-parameters, a wide array of values was tried
+for each hyper-parameter.  The hyper-parameter combination yielding
+the best accuracy for each algorithm tried is provided in the results
+section. 
+
+After performing cross-validation for each algorithm, the best
+hyper-parameter combination was then used to retrain the classifier
+using the full ``training set'', and the resulting classifier was used
+to predict labels of the ``test set''.
 
 
 \input{Result}
