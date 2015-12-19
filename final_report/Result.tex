@@ -3,6 +3,7 @@ We ran machine learning algorithms on Emulab d820\cite{emulab-wiki} machines wit
 
 Experimental results are shown in the following table. Machine learning algorithms are grouped in the table and groups are separated with an extra line. We want to point out the different between SVC with linear kernel and Linear SVC: the former does one vs one classification while the latter does one vs the rest classification. Accuracy represents the accuracy of predicting test set with the best hyper parameter obtained from cross validation. Time is the time taken to train the classifier on the full training dataset and to predict labels of test dataset. We give averaged time instead of total time because the average time is approximate to the runtime for the whole training set. We only show part of the best hyper parameters which is different to the default settings of each machine learning algorithm. Moreover, NA in the optimal hyper parameter column for a machine learning algorithm indicates that there are few hyper parameters that we can choose or we believe cross validation would not improve accuracy significantly for that particular algorithm.
 
+\begin{table}
 \begin{center}
 	\captionof{table}{Experimental results}
 	\begin{tabular}{c|c|c|c}
@@ -28,10 +29,10 @@ Experimental results are shown in the following table. Machine learning algorith
          Decision Tree &  61.23 & 10.1 & NA \\
          \hline
          \hline
-         K nearest neighbors & 54.11 & 11.26 & k: 15, weights:  distance\\
+         K nearest neighbors & 54.11 & 11.3 & k: 15, weights:  distance\\
          \hline
          \hline
-         Random Forest & 72.10 & 156.59 & n\_estimators: 100\\
+         Random Forest & 72.10 & 156.6 & n\_estimators: 100\\
          \hline
          Extremely Randomized Trees & 73.44 & 356.2 &
          min\_samples\_split: 4,
@@ -44,3 +45,4 @@ Experimental results are shown in the following table. Machine learning algorith
          \hline
           \end{tabular}
 \end{center}
+\end{table}
