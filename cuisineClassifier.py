@@ -21,6 +21,8 @@ elif sys.argv[1] == "SVCPoly":
     aborted = crossValidateSvmSVCPoly()
 elif sys.argv[1] == "SVRPoly":
     aborted = crossValidateSvmSVRPoly()
+elif sys.argv[1] == 'LinearSVC':
+    aborted = crossValidateLinearSVC()
 elif sys.argv[1] == "RandFrst":
     aborted = crossValidateRandFrst()
 elif sys.argv[1] == 'GaussianBayes':
@@ -31,7 +33,7 @@ elif sys.argv[1] == 'AdaBoost':
     aborted = crossValidateAdaboost()
 else:
     print("Must pass algo to run.  Choose from:")
-    print("  SVC, SVR, SVCPoly, SVRPoly, RandFrst,")
+    print("  SVC, SVR, SVCPoly, SVRPoly, LinearSVC, RandFrst,")
     print("  GaussianBayes, DecisionTree, AdaBoost")
     print("Example: python3 cuisineClassifier.py SVC")
     exit(-1)

@@ -8,6 +8,22 @@ from sklearn import tree
 from sklearn import neighbors
 
 ##########################################
+# svm LinearSVC 
+##########################################
+def crossValidateLinearSVC():
+    print("Using: Linear SVC")
+    sys.stdout.flush()
+    valueLabelPairs = [([1., 10., 100., 1000.], 'C')]
+    return crossValidate(LinearSVCFold, valueLabelPairs)
+
+def LinearSVCFold(foldNum, paramCombo):
+    startTime = time()
+    trainData,testData = getFoldData(foldNum)
+    clf = svm.LinearSVC(**paramCombo)
+    clf.fit(trainData['data'], trainData['target'])
+    return predict(clf, paramCombo, foldNum, startTime, testData)
+
+##########################################
 # svm SVC
 ##########################################
 def crossValidateSvmSVC():

@@ -1,0 +1,27 @@
+-What problem did you work on? Why is it interesting?
+
+
+
+-What are the important ideas you explored?
+
+
+
+-What ideas from the class did you use?
+
+
+
+-What did you learn?
+	sparse matrix
+	harder to classify 20 ways
+	a single ingredient set can map to multiple cuisines
+	observations about various ml algos
+	decision tree @ 55%, using random forest and extremely random forest boost to high 70s
+
+
+-Results (or for theoretical project, proofs)
+	max is italian at 7838 rec, mex at 6438, french 2646, chin 2673, ind 3003, south_us 4320, rest at or below 1500
+	many algos seem to converge at 55%, a couple seem to have upper bound at 77-78
+	
+
+
+-If you had much more time, how would you continue the project?

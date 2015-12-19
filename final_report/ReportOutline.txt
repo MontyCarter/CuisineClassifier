@@ -1,0 +1,42 @@
+Intro
+	Problem, why interesting
+	
+
+Problem (prelim analysis)
+	Describe details of problem
+	number of recp, ing, cuis
+	general distribution of labels
+	Other observations about data
+		single ingr set possibly maps to multiple cuisine
+	Most cuisines have salt as top ingred, also butter, flour, oil
+	Indicator ingredients
+		Garam marsala
+		fish sauce
+		black chicken
+		
+
+
+
+Methodology
+	Describe input data vectorization
+	dropping unknown ingreds during testing
+	multithreaded cross valid (10 way)	
+
+
+Results
+	Best accuracy per algo, list 
+
+
+
+Analysis
+
+
+
+Future Work
+
+
+
+Conclusion
+
+
+
