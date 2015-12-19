@@ -16,9 +16,10 @@ Moreover, we also learned that complexity of machine learning
 algorithms matters. One can see that runtime as well as accuracy of
 SVM algorithms is proportional to the complexity of their kernels. We
 would expect longer runtime if we increase the degree of polynomial
-kernels. Therefore, a trade-off between runtime (probably accuracy)
-and algorithm complexity can be explore $<$not sure what you're trying
-to say here$>$. We also noticed resource
+kernels. %Therefore, a trade-off between runtime (probably accuracy)
+%and algorithm complexity can be explore $<$not sure what you're trying
+%to say here$>$.
+We also noticed resource
 limits are also an important factor to consider when we choose machine
 learning algorithms. We encountered out of memory exceptions when
 running K-nearest neighbor algorithm even used sparse matrix that
@@ -36,8 +37,8 @@ runtime. We think indicator ingredients probably contribute to it
 because intuitively they tend to increase the margin and make the data
 more linearly separable. Note that the polynomial and Gaussian kernels
 do not improve the accuracy a lot, which means that boundaries among 
-cuisines is approximately linear and we could improve prediction
-accuracy after pruning the data.  $<$I don't understand this sentence$>$
+cuisines is approximately linear and we thus could possibly improve prediction
+accuracy by pruning the dataset to make it more linear separable. %$<$I don't understand this sentence$>$
 
 \paragraph{Probabilistic learning} After some analysis on statistics
 that we gathered from the data set, we found it straight forward to
@@ -47,9 +48,9 @@ classifier is $argmax_y \Pr(Y)\prod_{i} \Pr(x_i|Y)$, which means that
 if a cuisine has some indicator ingredients (the probability that it
 belongs to a certain cuisine is high), then it is highly likely to be
 predicted correctly. It corresponds to our observation that the top
-five ingredients of 20 cuisines are mostly different. $<$I said the
-OPPOSITE of this statement (top 5 ingreds largely overlap...  Sugar,
-salt, butter, flour...  We need to reconcile this discrepancy.$>$
+five ingredients as a whole set of 20 cuisines are exclusive . %$<$I said the
+%OPPOSITE of this statement (top 5 ingreds largely overlap...  Sugar,
+%salt, butter, flour...  We need to reconcile this discrepancy.$>$
  
 \paragraph{Ensemble methods} Ensemble methods with decision trees as
 weak learners, indeed, proved to be helpful.  The ensemble methods
