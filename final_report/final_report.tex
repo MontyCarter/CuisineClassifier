@@ -123,7 +123,10 @@ configurations, we then proceeded to try two other classes of
 learners: Naive Bayes and Decision Trees.  Initial results from these
 categories of learners were encouraging.  However, seeing these
 initial results, it became clear that we would likely see improvement
-by using some ensemble methods.
+by using some ensemble methods.  Each of the algorithms used
+automatically uses the concept of epochs (except K-Nearest Neighbors),
+and we used the default stopping criteria to determine when to
+terminate learning.  
 
 For each of the algorithms used, 10-fold cross validation was used on
 the training set.  For all algorithms taking hyper-parameters, a wide
@@ -150,8 +153,20 @@ are seen below in the results section.
 
 
 \section{Conclusion}
+Although we saw that multi-class classification can be difficult and
+may lead to lower prediction accuracy, I think that we obtained a
+reasonably high rate of around 80\%.  
 
+We believe there may be an limit to the accuracy that is possible with
+even the best algorithm, due to the fact that different cuisines can
+be indicated by the same set of ingredients.
 
+We saw that ensemble methods can definitely help to boost performance
+of single algorithms.
+
+Overall we were pleased with the results of our implementation.  It
+was a good experience, and it gave us a great opportunity to try
+various learning algorithms on real world data.
 
 \bibliography{refs}
 \bibliographystyle{plain}
