@@ -141,7 +141,7 @@ hyper-parameter combination was then used to retrain the classifier
 using the full training set, and the resulting classifier was used
 to predict labels of the test set.  The results of these experiments
 are seen below in the results section. Our implementation can be found
-on Github(\url{https://github.com/MontyCarter/CuisineClassifier}).
+on Github (\url{https://github.com/MontyCarter/CuisineClassifier}).
 
 We ran machine learning algorithms on Emulab d820\cite{emulab-wiki}
 machines with four 2.2 GHz 64-bit 8-Core Intel E5-4620 processors and
@@ -156,11 +156,19 @@ multi-processing cross validation.
 
 
 \section{Future Work}
-Given extra time, we would like to improve our work in following directions.
+Given extra time, we would like to improve our work in following
+directions. 
 \begin{enumerate}
-	\item We would like to prune the dataset by merging ingredients which have different names while are essentially the same. 
-	\item It would be good for us to analyze mislabeled data so that we may have useful observation to facilitate learning.
-	\item Although we have used several machine learning algorithms in this project, we would like to try more parameter combinations of AdaBoost algorithm.
+	\item We would like to prune the dataset by merging
+          ingredients which have different names while are essentially
+          the same.   
+	\item It would be good for us to analyze mislabeled data so
+          that we may have useful observation to facilitate learning.
+	\item Although we have used several machine learning
+          algorithms in this project, we would like to try more
+          parameter combinations of AdaBoost algorithm, particularly
+          with the SVM kernel (surely, we should be able to get better
+          than chance!)
 \end{enumerate}
 
 \section{Conclusion}
@@ -169,7 +177,9 @@ may lead to lower prediction accuracy, I think that we obtained a
 reasonably high rate of around 80\%.  
 
 We believe there may be an limit to the accuracy that is possible with
-even the best algorithm, due to the reasons described in the beginning of the analysis section. And we proposed a method to ease the limit in the future work section.
+even the best algorithm, due to the reasons described in the beginning
+of the analysis section. And we proposed a method to push the limit in
+the future work section. 
 %the fact that different cuisines can
 %be indicated by the same set of ingredients.
 
