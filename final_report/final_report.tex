@@ -57,12 +57,10 @@ the cuisine of a recipe based on its ingredients.
 
 \section{Problem Description and Preliminary Analysis}
 As mentioned, we focus on classifying the cuisine of a recipe given
-its ingredients.  we found pre-compiled recipe data on kaggle.com.
-This dataset includes two json files, one for training data, and one
-for test data.  The training data is a list of recipes.  For each
-recipe, a list of ingredients and a cuisine are given.  The test data
-is a list of recipes, which only provides ingredients for each
-recipe. 
+its ingredients.  We found pre-compiled recipe data on kaggle.com.
+This dataset includes training data in a json file format.  The
+training data is a list of recipes.  For each recipe, a list of
+ingredients and a cuisine are given.  
 
 A preliminary analysis of the data reveals some basic statistics about
 the dataset.  The original training data includes 39,744 recipes taken
@@ -99,8 +97,8 @@ prototype solutions, our familiarity with the language, and the
 availability of scikit-learn, an easy to use, well supported machine
 learning package.  
 
-We first perform preprocessing on the data.  Because we the test set
-provided by Kaggle does not include labels, we partition 90\% the
+We first perform preprocessing on the data.  Because there was no
+useful test set provided on kaggle.com, we partition 90\% the
 provided training data as our ``training set'', and 10\% as our ``test
 set''. This provides us with the ability to measure the performance of
 our final solution.  Two sets are then generated -- one containing the
@@ -112,26 +110,34 @@ the sorted set of cuisines becomes the label number for each cuisine
 class.  A vector is then created for each recipe in the training and
 test sets.  For each vector, the features get set to 1.0 if the
 ingredient is present in the recipe, and the cuisine number becomes
-the last element in the vector.
+the last element in the vector.  The vectors are then converted into
+compressed row storage (CSR) format (this turned out to significantly
+improve the performance of both reading and preprocessing the data, as 
+well as the performance of the fitting and prediction).
 
 As this is our first application of machine learning to a real-world
 problem, we didn't have much experience to guide our selection of an
-algorithm.  Because of this, we by trying a support vector machine
-classifier.  Subsequently, we tried various other classifiers.
+algorithm.  We began our investigation with a support vector machine
+classifier.  After experimenting with several different SVM
+configurations, we then proceeded to try two other classes of
+learners: Naive Bayes and Decision Trees.  Initial results from these
+categories of learners were encouraging.  However, seeing these
+initial results, it became clear that we would likely see improvement
+by using some ensemble methods.
 
 For each of the algorithms used, 10-fold cross validation was used on
-the ``training set'' (where the ``training set'' represents 90\% of
-the original training set provided by kaggle.com').  For all
-algorithms taking hyper-parameters, a wide array of values was tried
-for each hyper-parameter.  The hyper-parameter combination yielding
-the best accuracy for each algorithm tried is provided in the results
-section. 
+the training set.  For all algorithms taking hyper-parameters, a wide
+array of values was tried for each hyper-parameter.  The
+hyper-parameter combination yielding the best accuracy for each
+algorithm tried is provided in the results section.  Our cross
+validation framework utilizes a thread pool, allowing us to perform
+cross-validation in a highly parallelized fashion.
 
 After performing cross-validation for each algorithm, the best
 hyper-parameter combination was then used to retrain the classifier
-using the full ``training set'', and the resulting classifier was used
-to predict labels of the ``test set''.
-
+using the full training set, and the resulting classifier was used
+to predict labels of the test set.  The results of these experiments
+are seen below in the results section.
 
 \input{Result}
 
