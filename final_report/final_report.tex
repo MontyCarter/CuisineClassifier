@@ -16,12 +16,118 @@
 \maketitle
 
 \section{Introduction}
-The problem that we addressed in our project is to predict the cuisine type of a
-recipe based on the recipe's ingredients. It originates from a competition on kaggle.com\cite{kaggle-link}. The setting of this problem is that we are given a training set of different cuisines and each cuisine is associated with a list of ingredients used to make it.
+The ability to predict a cuisine type of a recipe based on its
+ingredients has some interesting real-world implications.  A retailer
+can better target advertisements to its customers based on their food
+preferences and buying habits.  For example, if a shopping cart
+contains ingredients indicative of a certain cuisine, the retailer can
+suggest other products that might be appealing to the consumer.
 
-We found it interesting in two ways. First, we can possibly learn the relation between recipe ingredients and ethnicity via this project. For example, a local grocery store may advertise more precisely to customers after an analysis of the category of their purchases based on the learned model. Second, data given to us in this project comes from real world, which can help us to learn the tricks to deal with unshaped data such as high dimensionality, noise, and unseen labels.
+This is the problem that we address in our project.  The idea
+originated from a competition on kaggle.com\cite{kaggle-link}. The
+competition on  kaggle.com provides a list of recipes.  For each
+recipe, the ingredients are given, as well as a cuisine type which
+classifies each recipe.
 
-We applied multiple machine learning algorithms that we learned from class by leveraging sci-kit learn python package. We also used machine learning algorithms whose underlying ideas are covered in class though their details are not mentioned. For the following sections, we will describe our hypothesis of this problem and how we tried to learn the hypothesis using corresponding machine learning algorithms.
+We found this problem interesting in three ways. First, as mentioned,
+the problem has real-world applications and might be interesting to
+retailers, social media sites, and other organizations that aggregate
+data about users and consumers.  Second, data given to us in this
+project comes from real world, which provides us with an opportunity
+to learn tricks to deal with unshaped data such as high
+dimensionality, noise, and unseen labels.  Finally, we found this 
+project to be interesting because it is a multi-class classification
+problem with a relatively high number of classes.  Because we didn't
+get much time to address multi-class classification in class, it has
+been nice to get some experience with such problems.
+
+Because this was our first real-world application of machine learning,
+we didn't have much experience to guide our selection of a machine
+learning algorithm.  As a result, our project became an exploration of
+various machine learning algorithms.  We applied multiple machine
+learning algorithms that we learned from class by leveraging
+scikit-learn python package. Though we lacked real-world application
+experience, we used theory learned in class to help guide our search
+through the dozens of algorithms available in the scikit-learn
+package.
+
+In this paper we describe our investigation into the classification of
+the cuisine of a recipe based on its ingredients.
+
+\section{Problem Description and Preliminary Analysis}
+As mentioned, we focus on classifying the cuisine of a recipe given
+its ingredients.  we found pre-compiled recipe data on kaggle.com.
+This dataset includes two json files, one for training data, and one
+for test data.  The training data is a list of recipes.  For each
+recipe, a list of ingredients and a cuisine are given.  The test data
+is a list of recipes, which only provides ingredients for each
+recipe. 
+
+A preliminary analysis of the data reveals some basic statistics about
+the dataset.  The original training data includes 39,744 recipes taken
+from 20 different cuisines, which use a total of 6,714 different
+ingredients.  Of these 39,744 recipes, 7,838 are Italian, 6,438 are
+Mexican, 4,320 are Southern US, 3,003 are Indian, 2,673 are Chinese,
+and 2,646 are French.  Each of the remaining 14 cuisines contribute
+fewer than 1,500 recipes each.
+
+For a majority of cuisines, the most commonly used ingredients are
+common across all cuisines.  For example, the most commonly used
+ingredient of all cuisines is salt or a salt replacement like soy
+sauce or fish sauce.  Although many of the top ingredients are common
+across all cuisines, there are ingredients that we refer to as
+indicator ingredients.  Such ingredients are only seen in a small
+number of cuisines.  For example, garam marsala is \emph{only} used in
+Indian food, where it is found in approximately 1/3 of all Indian
+recipes.  Another example is fish sauce, which is only found in Asian
+cuisines (Chinese, Korean, Filipino, etc.) Such ingredients
+undoubtedly assist the prediction process as they reduce 
+the number of cuisines possible for a recipe using such ingredients.  
+
+Another observation to be noted for our problem is that a single set of
+ingredients can map to multiple cuisines.  For example, French
+baguettes and Italian breadsticks may call for the same ingredients in
+different quantities.
+
+
+\section{Methodology}
+We chose to implement our project Python due to its ability to rapidly
+prototype solutions, our familiarity with the language, and the
+availability of scikit-learn, an easy to use, well supported machine
+learning package.  
+
+We first perform preprocessing on the data.  Because we the test set
+provided by Kaggle does not include labels, we partition 90\% the
+provided training data as our training set, and 10\% as our test set.
+This provides us with the ability to measure the performance of our
+final solution.  Two sets are then generated -- one containing the
+ingredients and one containing the cuisine labels in use across the
+training set.  These lists are then sorted.  The index of each
+ingredient in the sorted set of ingredients becomes the feature
+dimension number for that ingredient, and the index of each cuisine in
+the sorted set of cuisines becomes the label number for each cuisine
+class.  A vector is then created for each recipe in the training and
+test sets.  For each vector, the features get set to 1.0 if the
+ingredient is present in the recipe, and the cuisine number becomes
+the last element in the vector.
+
+As this is our first application of machine learning to a real-world
+problem, we didn't have much experience to guide our selection of an
+algorithm.  Because of this, our project became 
+Because 
+
+
+\section{Results}
+
+
+\section{Analysis}
+
+
+\section{Future Work}
+
+
+\section{Conclusion}
+
 
 \bibliography{refs}
 \bibliographystyle{plain}
